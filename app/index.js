@@ -9,12 +9,6 @@ me.addEventListener('unload', (evt) => {
   console.log('Customized closing handler function!')
 })
 
-// Debug: Reporting memory
-import {memory} from 'system'
-setInterval(() => {
-  console.log("JS memory: " + memory.js.used + "/" + memory.js.total)
-}, 5000)
-
 // My modules
 import * as utils from '../common/utils'
 import * as view from 'view'
