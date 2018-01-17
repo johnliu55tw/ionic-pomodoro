@@ -56,10 +56,9 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
 export function PomodoroTimer (pomoSetting) {
   /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
   TODO:
-    1. Reset function
-    2. Vibrate on every interval state change
-    3. Skip function
-    4. Recover from closed
+    1. Vibrate on every interval state change
+    2. Skip function
+    3. Recover from closed
   */
   this.pomoSetting = pomoSetting
   // Internal states
@@ -100,7 +99,15 @@ export function PomodoroTimer (pomoSetting) {
   }
 
   this.reset = () => {
-    console.log('Not implemented: reset')
+    console.log('Timer reset')
+    // Initializing internal states
+    this.timerState = PomoTimerState.idle
+    this.intvlState = PomoIntvlState.work
+    this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
+    this.startedAt = null
+    this.pausedAt = null
+    this.countdown = this.pomoSetting.work // Initialized to the time of work interval
+    this.intvlMarker = null
   }
 
   this.update = (now) => {

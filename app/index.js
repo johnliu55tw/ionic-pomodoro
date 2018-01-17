@@ -84,11 +84,7 @@ buttons.pomoMenuSkip().addEventListener('click', (evt) => {
 })
 
 buttons.pomoMenuReset().addEventListener('click', (evt) => {
-  console.log('reset')
-  clearTimeout(timeoutHandler)
-  timeoutHandler = null
-  remainedTime = null
-  startTime = null
-  endTime = null
+  console.log('button reset')
   pomoMenu.style.visibility = 'hidden'
+  pomo.reset()
 })
