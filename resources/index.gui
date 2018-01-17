@@ -1,0 +1,65 @@
+<svg id="root">
+  <section x="12" y="12" width="162" height="50">
+    <rect id="date-bg" class="background"/>
+    <text id="date" font-family="System-Regular" font-size="40" text-anchor="middle" x="50%" y="40">
+      01-25
+    </text>
+    
+  </section>
+
+  <section x="12" y="74" width="162" height="164">
+    <rect id="time-bg" class="background"/>
+    <text id="hours" font-family="System-Bold" font-size="100" text-anchor="middle" x="50%" y="25%+35">
+      23
+    </text>
+    <text id="mins" font-family="System-Bold" font-size="100" text-anchor="middle" x="50%" y="75%+35">
+      39
+    </text>
+  </section>
+  
+  <svg id="pomo-container" class="button" x="186" y="12" width="150" height="107" pointer-events="visible">
+    <rect id="pomo-bg" class="background"/>
+    <text id="pomo-time" class="pomo" font-family="System-Regular" font-size="50" text-anchor="middle" x="50%" y="25%+15">
+      17:33
+    </text>
+    <text id="pomo-sets" class="pomo" font-family="System-Regular" font-size="50" text-anchor="middle" x="50%" y="75%+15">
+      3/12
+    </text>
+  </svg>
+  
+  <svg id="pomo-menu" class="pop-menu" x="12" y="12" width="324" height="107" visibility="hidden">
+    <rect id="pomo-menu-bg" class="background" opacity="0"/>
+    
+    <svg id="pomo-menu-skip" class="button" pointer-events="visible"
+         x="12" y="12" width="92" height="100%-24">
+      <rect id="pomo-menu-skip-bg" class="background" fill="cyan"/>
+      <text id="pomo-menu-skip-text" class="pomo" font-family="System-Regular" font-size="30" text-anchor="middle" x="50%" y="50%">
+        Skip
+      </text>
+    </svg>
+
+    <svg id="pomo-menu-reset" class="button pomo-menu" pointer-events="visible"
+          x="116" y="12" width="92" height="100%-24">
+      <rect id="pomo-menu-reset-bg" class="background" fill="cyan"/>
+      <text id="pomo-menu-reset-reset" class="pomo" font-family="System-Regular" font-size="30" text-anchor="middle" x="50%" y="50%">
+        Reset
+      </text>
+    </svg>
+    
+    <svg id="pomo-menu-cancel" class="button pomo-menu" pointer-events="visible"
+          x="220" y="12" width="92" height="100%-24">
+      <rect id="pomo-menu-cancel-bg" class="background" fill="cyan"/>
+      <text id="pomo-menu-cancel-text" class="pomo" font-family="System-Regular" font-size="30" text-anchor="middle" x="50%" y="50%">
+        Cancel
+      </text>
+    </svg>
+  </svg>
+  
+  <svg id="stat-container" class="button stat" x="186" y="131" width="150" height="107" pointer-events="visible">
+    <rect id="stat-bg" class="background" />
+    <image id="stat-icon" class="stat"x="50%-20" y="25%-20" height="40" width="40" href="images/stat_hr_solid_32px.png" />
+    <text id="stat-value" class="stat" font-family="System-Bold" font-size="40" text-anchor="middle" x="50%" y="75%+10">
+      998899
+    </text>
+  </svg>
+</svg>

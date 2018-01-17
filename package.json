@@ -1,0 +1,17 @@
+{
+  "fitbit": {
+    "appUUID": "cb1834d8-9fdb-46b8-b5b2-b33596da53fc",
+    "appType": "app",
+    "appDisplayName": "PomodoroClock",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "#607d8b",
+    "requestedPermissions": [
+      "access_heart_rate"
+    ],
+    "i18n": {
+      "en": {
+        "name": "PomodoroClock"
+      }
+    }
+  }
+}
