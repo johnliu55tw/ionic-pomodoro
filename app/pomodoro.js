@@ -61,16 +61,20 @@ export function PomodoroTimer (pomoSetting) {
     3. Recover from closed
   */
   this.pomoSetting = pomoSetting
-  // Internal states
-  this.timerState = PomoTimerState.idle
-  this.intvlState = PomoIntvlState.work
-  this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
-  this.startedAt = null
-  this.pausedAt = null
-  this.countdown = this.pomoSetting.work // Initialized to the time of work interval
-  this.intvlMarker = null
 
   /* Methods */
+  // Reset/Initialize internal states
+  this._resetInternalState = () => {
+    this.timerState = PomoTimerState.idle
+    this.intvlState = PomoIntvlState.work
+    this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
+    this.startedAt = null
+    this.pausedAt = null
+    this.countdown = this.pomoSetting.work // Initialized to the time of work interval
+    this.intvlMarker = null
+  }
+  this._resetInternalState()
+
   this.toggle = () => {
     switch (this.timerState) {
       case PomoTimerState.idle: // Start from idle
@@ -100,14 +104,7 @@ export function PomodoroTimer (pomoSetting) {
 
   this.reset = () => {
     console.log('Timer reset')
-    // Initializing internal states
-    this.timerState = PomoTimerState.idle
-    this.intvlState = PomoIntvlState.work
-    this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
-    this.startedAt = null
-    this.pausedAt = null
-    this.countdown = this.pomoSetting.work // Initialized to the time of work interval
-    this.intvlMarker = null
+    this._resetInternalState()
   }
 
   this.update = (now) => {
@@ -125,14 +122,7 @@ export function PomodoroTimer (pomoSetting) {
         this.doneIntvls = this.intvlMarker.intvl[closest]
       } else { // End
         console.log('Timer end')
-        // Initializing internal states
-        this.timerState = PomoTimerState.idle
-        this.intvlState = PomoIntvlState.work
-        this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
-        this.startedAt = null
-        this.pausedAt = null
-        this.countdown = this.pomoSetting.work // Initialized to the time of work interval
-        this.intvlMarker = null
+        this._resetInternalState()
       }
     }
   }
