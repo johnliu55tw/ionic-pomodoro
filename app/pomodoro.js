@@ -1,3 +1,26 @@
+function findNextClosest (arr, elem) {
+  if (findNextClosest.lastFoundIdx > 0 &&
+      elem > arr[findNextClosest.lastFoundIdx - 1] &&
+      elem <= arr[findNextClosest.lastFoundIdx]) {
+    return findNextClosest.lastFoundIdx
+  }
+  let closest = 0
+  for (closest = 0; closest < arr.length; closest++) {
+    if (elem <= arr[closest]) {
+      break
+    }
+  }
+  if (closest === arr.length) {
+    // Not found
+    findNextClosest.lastFoundIdx = -1
+    return -1
+  } else {
+    findNextClosest.lastFoundIdx = closest
+    return closest
+  }
+}
+findNextClosest.lastFoundIdx = 0
+
 export const PomoIntvlState = {
   work: 'work',
   rest: 'rest',
@@ -110,13 +133,8 @@ export function PomodoroTimer (pomoSetting) {
   this.update = (now) => {
     if (this.timerState === PomoTimerState.running) {
       // Find closest timestamp in markers to now
-      let closest = 0
-      for (closest = 0; closest < this.intvlMarker.length; closest++) {
-        if (now <= this.intvlMarker.ts[closest]) {
-          break
-        }
-      }
-      if (closest !== this.intvlMarker.length) {
+      let closest = findNextClosest(this.intvlMarker.ts, now)
+      if (closest > 0) {
         this.countdown = this.intvlMarker.ts[closest] - now // Update countdown value
         this.intvlState = this.intvlMarker.state[closest] // Update interval state
         this.doneIntvls = this.intvlMarker.intvl[closest]
