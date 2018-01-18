@@ -19,7 +19,7 @@ import {PomodoroSetting, PomodoroTimer, PomoIntvlState, PomoTimerState} from 'po
 let hrm = new HeartRateSensor()
 hrm.start()
 
-let pomoSetting = new PomodoroSetting(1, 1, 1, 4, 12)
+let pomoSetting = new PomodoroSetting(25, 5, 15, 4, 12)
 let pomo = new PomodoroTimer(pomoSetting, () => {
   vibration.start('nudge')
   display.on = true
