@@ -20,7 +20,10 @@ let hrm = new HeartRateSensor()
 hrm.start()
 
 let pomoSetting = new PomodoroSetting(1, 1, 1, 4, 12)
-let pomo = new PomodoroTimer(pomoSetting)
+let pomo = new PomodoroTimer(pomoSetting, () => {
+  vibration.start('nudge')
+  display.on = true
+})
 
 clock.granularity = "seconds"
 clock.addEventListener('tick', (evt) => {

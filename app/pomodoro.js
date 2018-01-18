@@ -76,7 +76,7 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
   }
 }
 
-export function PomodoroTimer (pomoSetting) {
+export function PomodoroTimer (pomoSetting, notifyCallback) {
   /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
   TODO:
     1. Vibrate on every interval state change
@@ -84,10 +84,15 @@ export function PomodoroTimer (pomoSetting) {
     3. Recover from closed
   */
   this.pomoSetting = pomoSetting
+  this.notifyCallback = notifyCallback
 
   /* Methods */
   // Reset/Initialize internal states
   this._resetInternalState = () => {
+    if (this.notifyTimerHandler) {
+      clearTimeout(this.notifyTimerHandler)
+    }
+    this.notifyTimerHandler = null
     this.timerState = PomoTimerState.idle
     this.intvlState = PomoIntvlState.work
     this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
@@ -98,12 +103,20 @@ export function PomodoroTimer (pomoSetting) {
   }
   this._resetInternalState()
 
+  this.notify = () => {
+    if (this.notifyCallback) {
+      this.notifyCallback()
+    }
+    this.notifyTimerHandler = null
+  }
+
   this.toggle = () => {
     switch (this.timerState) {
       case PomoTimerState.idle: // Start from idle
         this.timerState = PomoTimerState.running
         this.startedAt = Date.now()
         this.intvlMarker = this.pomoSetting.getMarkers(this.startedAt)
+        this.notifyTimerHandler = setTimeout(this.notify, this.pomoSetting.work)
         break
       case PomoTimerState.paused: // Start from paused
         this.timerState = PomoTimerState.running
@@ -113,10 +126,13 @@ export function PomodoroTimer (pomoSetting) {
         this.intvlMarker = this.pomoSetting.getMarkers(newStartedAt)
         this.pausedAt = null
         this.update(now)
+        this.notifyTimerHandler = setTimeout(this.notify, this.countdown)
         break
       case PomoTimerState.running: // Pause
         this.timerState = PomoTimerState.paused
         this.pausedAt = Date.now()
+        clearTimeout(this.notifyTimerHandler)
+        this.notifyTimerHandler = null
         break
     }
   }
@@ -131,6 +147,9 @@ export function PomodoroTimer (pomoSetting) {
   }
 
   this.update = (now) => {
+    if (!now) {
+      now = Date.now()
+    }
     if (this.timerState === PomoTimerState.running) {
       // Find closest timestamp in markers to now
       let closest = findNextClosest(this.intvlMarker.ts, now)
@@ -141,6 +160,21 @@ export function PomodoroTimer (pomoSetting) {
       } else { // End
         console.log('Timer end')
         this._resetInternalState()
+      }
+      // Setup notification
+      if (!this.notifyTimerHandler) {
+        console.log('Setup notify handler countdown for: ' + this.countdown.toString())
+        // Note: When the notify() method awaked the screen and caused this
+        // method got called, the current timestamp might haven't passed the
+        // time that marked the interval change, so the countdown will be a very
+        // small value. So we set a handler here that if the countdown is
+        // smaller than 2 seconds, call update again later.
+        if (this.countdown < 2000) {
+          console.log('Countdown < 2 secs: ' + this.countdown.toString() + ', call later!')
+          setTimeout(this.update, 2000)
+        } else {
+          this.notifyTimerHandler = setTimeout(this.notify, this.countdown)
+        }
       }
     }
   }
