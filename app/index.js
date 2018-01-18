@@ -25,31 +25,39 @@ let pomo = new PomodoroTimer(pomoSetting, () => {
   display.on = true
 })
 
-clock.granularity = "seconds"
-clock.addEventListener('tick', (evt) => {
+var updateTimerAndHrmView = (evt) => {
   view.datetime(evt.date)
   view.stat('h', hrm.heartRate, '#8A2BE2')
-})
-
-clock.addEventListener('tick', (evt) => {
+}
+var updatePomoView = (evt) => {
   pomo.update(evt.date.getTime())
   if (pomo.timerState === PomoTimerState.running) {
+    let color = null
+    switch (pomo.intvlState) {
+      case PomoIntvlState.work:
+        color = 'fb-yellow'
+        break
+      case PomoIntvlState.rest:
+        color = 'fb-blue'
+        break
+      case PomoIntvlState.longRest:
+        color = 'fb-mint'
+        break
+    }
     view.pomodoro(pomo.countdown / 1000,
                   pomo.doneIntvls,
                   pomoSetting.totalIntervals,
-                  'green')
-  } else if (pomo.timerState === PomoTimerState.paused) {
-    view.pomodoro(pomo.countdown / 1000,
-                  pomo.doneIntvls,
-                  pomoSetting.totalIntervals,
-                  'yellow')
+                  color)
   } else {
     view.pomodoro(pomo.countdown / 1000,
                   pomo.doneIntvls,
                   pomoSetting.totalIntervals,
                   'gray')
   }
-})
+}
+clock.granularity = 'seconds'
+clock.addEventListener('tick', updateTimerAndHrmView)
+clock.addEventListener('tick', updatePomoView)
 
 // Testing pop menu
 let pomoMenuTimeout = null
@@ -57,6 +65,7 @@ let pomoMenu = document.getElementById("pomo-menu")
 let pomoBg = document.getElementById('pomo-bg')
 
 utils.assignLongPressEventListener(buttons.pomoWidget(), (evt) => {
+  vibration.start('confirmation')
   pomoMenu.style.visibility = 'visible'
   // Close the menu after 5s
   if (pomoMenuTimeout) {
@@ -68,20 +77,28 @@ utils.assignLongPressEventListener(buttons.pomoWidget(), (evt) => {
 })
 
 utils.addShortPressEventListener(buttons.pomoWidget(), (evt) => {
+  vibration.start('confirmation')
   pomo.toggle()
+  pomo.update()
+  updatePomoView({date: new Date()})
 })
 
 buttons.pomoMenuCancel().addEventListener('click', (evt) => {
+  vibration.start('confirmation')
   pomoMenu.style.visibility = 'hidden'
 })
 
 buttons.pomoMenuSkip().addEventListener('click', (evt) => {
   console.log('skip')
+  vibration.start('confirmation')
   pomoMenu.style.visibility = 'hidden'
 })
 
 buttons.pomoMenuReset().addEventListener('click', (evt) => {
   console.log('button reset')
+  vibration.start('confirmation')
   pomoMenu.style.visibility = 'hidden'
   pomo.reset()
+  pomo.update()
+  updatePomoView({date: new Date()})
 })
