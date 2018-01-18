@@ -29,7 +29,7 @@ clock.addEventListener('tick', (evt) => {
 })
 
 clock.addEventListener('tick', (evt) => {
-  pomo.update(evt.date)
+  pomo.update(evt.date.getTime())
   if (pomo.timerState === PomoTimerState.running) {
     view.pomodoro(pomo.countdown / 1000,
                   pomo.doneIntvls,
