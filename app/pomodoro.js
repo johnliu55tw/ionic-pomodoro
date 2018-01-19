@@ -168,7 +168,7 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
       }
 
       let fastForward = this.intvlMarker.ts[closest] - this.pausedAt
-      console.log('Fast forwarding pausedAt' + fastForward.toString() + ' milliseconds.')
+      console.log('Fast forwarding pausedAt ' + fastForward.toString() + ' milliseconds.')
       this.pausedAt = this.pausedAt + fastForward
       // Start the timer!
       this.toggle()
@@ -197,7 +197,6 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
       }
       // Setup notification
       if (!this.notifyTimerHandler) {
-        console.log('Setup notify handler countdown for: ' + this.countdown.toString())
         // Note: When the notify() method awaked the screen and caused this
         // method got called, the current timestamp might haven't passed the
         // time that marked the interval change, so the countdown will be a very
@@ -207,6 +206,7 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
           console.log('Countdown < 2 secs: ' + this.countdown.toString() + ', call later!')
           setTimeout(this.update, 2000)
         } else {
+          console.log('Setup notify handler countdown for: ' + this.countdown.toString())
           this.notifyTimerHandler = setTimeout(this.notify, this.countdown)
         }
       }
