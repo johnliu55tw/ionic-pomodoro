@@ -79,9 +79,8 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
 export function PomodoroTimer (pomoSetting, notifyCallback) {
   /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
   TODO:
-    1. Vibrate on every interval state change
-    2. Skip function
-    3. Recover from closed
+    1. Skip function
+    2. Recover from closed
   */
   this.pomoSetting = pomoSetting
   this.notifyCallback = notifyCallback
