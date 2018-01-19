@@ -6,7 +6,7 @@ function findNextClosest (arr, elem) {
   }
   let closest = 0
   for (closest = 0; closest < arr.length; closest++) {
-    if (elem <= arr[closest]) {
+    if (elem < arr[closest]) {
       break
     }
   }
@@ -108,23 +108,24 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
     this.notifyTimerHandler = null
   }
 
-  this.toggle = () => {
+  this.toggle = (now) => {
+    if (!now) {
+      now = Date.now()
+    }
     switch (this.timerState) {
       case PomoTimerState.idle: // Start from idle
         this.timerState = PomoTimerState.running
-        this.startedAt = Date.now()
+        this.startedAt = now
         this.intvlMarker = this.pomoSetting.getMarkers(this.startedAt)
-        this.notifyTimerHandler = setTimeout(this.notify, this.pomoSetting.work)
+        this.update(now)
         break
       case PomoTimerState.paused: // Start from paused
         this.timerState = PomoTimerState.running
-        let now = Date.now()
         let newStartedAt = this.startedAt + now - this.pausedAt
         this.startedAt = newStartedAt
         this.intvlMarker = this.pomoSetting.getMarkers(newStartedAt)
         this.pausedAt = null
         this.update(now)
-        this.notifyTimerHandler = setTimeout(this.notify, this.countdown)
         break
       case PomoTimerState.running: // Pause
         this.timerState = PomoTimerState.paused
