@@ -3,20 +3,19 @@ export function zfill (i) {
   if (i < 10) {
     return '0' + i.toString()
   } else {
-    return i.toString() 
+    return i.toString()
   }
 }
 
-export function secondsToClock (secs, mono=false) {
+export function secondsToClock (secs, mono = false) {
   /* Convert seconds to clock display string in 'HH:MM' */
   let toStr = mono ? toMonoDigits : zfill
-  
   let minPart = Math.floor(secs / 60)
   let secPart = secs % 60
   return toStr(minPart) + ':' + toStr(secPart)
 }
 
-export function toMonoDigits (num, zfill=true) {
+export function toMonoDigits (num, zfill = true) {
   /* Convert a number to a special monospace number.
 
   Arguments:
@@ -35,9 +34,8 @@ export function toMonoDigits (num, zfill=true) {
   }
 }
 
-export function toDigits (num, fromLsb=true) {
+export function toDigits (num, fromLsb = true) {
   /* Convert a number into array of digits. If the number is zero, return null.
-  
   Argumenst:
     num: Number to be destructed.
     fromLsb: How the digits ordered in the returned array. Default to true.
@@ -45,10 +43,10 @@ export function toDigits (num, fromLsb=true) {
       If it's false, number 137 will return [1, 3, 7]
   */
   let addMethod = fromLsb ? Array.prototype.push : Array.prototype.unshift
-  
-  if (num === 0)
-    return null
 
+  if (num === 0) {
+    return null
+  }
   let ret = []
   while (num !== 0) {
     addMethod.call(ret, (num % 10))
@@ -61,27 +59,27 @@ export function assignLongPressEventListener (elem, handler) {
   /* Assign a handler function for long press event. If a handler funciton
     has already been assigned to the element, it will be REPLACED by this
     function. That's why it's called 'assign', not 'add'.
-  
+
   NOTE: If an element ever used this function, the handler functions for
     handling the short press event (i.e. 'click' event) must be added with
     the function 'addShortPressEventListener' in this module, or some
     weird thing might happened, e.g. a short-press event got triggered
     after a long-press event.
-    
+
   TODO:
     1. Maybe I could try to fixed the aforemention problem with fixing the
       'addEventListener' and 'onclick' method of the element.
   */
   elem.longPressed = false
   elem.downAt = null
-  
+
   elem.addEventListener('mousedown', function (evt) {
     this.longPressed = false
     if (this.downAt === null) {
       this.downAt = Date.now()
     }
   })
-  
+
   elem.addEventListener('mouseup', function (evt) {
     if (this.downAt && !this.longPressed && (Date.now() - this.downAt >= 400)) {
       // The threshold should be 400ms.
@@ -104,7 +102,6 @@ export function addShortPressEventListener (elem, handler) {
     if (this.longPressed) {
       // Already been long pressed, no need to trigger short press again
       this.longPressed = false
-      return
     } else {
       handler.call(this, evt)
     }
