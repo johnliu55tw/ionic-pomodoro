@@ -1,20 +1,19 @@
 import document from 'document'
 import clock from 'clock'
 import {HeartRateSensor} from 'heart-rate'
-import {vibration} from "haptics";
+import {vibration} from 'haptics'
 import {display} from 'display'
-// App closing handler
 import {me} from 'appbit'
-me.addEventListener('unload', (evt) => {
-  console.log('Customized closing handler function!')
-})
-
 // My modules
 import * as utils from '../common/utils'
 import * as view from 'view'
 import * as buttons from 'buttons'
 import {PomodoroSetting, PomodoroTimer, PomoIntvlState, PomoTimerState} from 'pomodoro'
 
+// App closing handler
+me.addEventListener('unload', (evt) => {
+  console.log('Customized closing handler function!')
+})
 
 let hrm = new HeartRateSensor()
 hrm.start()
@@ -60,10 +59,9 @@ clock.granularity = 'seconds'
 clock.addEventListener('tick', updateTimerAndHrmView)
 clock.addEventListener('tick', updatePomoView)
 
-// Testing pop menu
+// Buttons and pop up menus
 let pomoMenuTimeout = null
-let pomoMenu = document.getElementById("pomo-menu")
-let pomoBg = document.getElementById('pomo-bg')
+let pomoMenu = document.getElementById('pomo-menu')
 
 utils.assignLongPressEventListener(buttons.pomoWidget(), (evt) => {
   vibration.start('confirmation')
