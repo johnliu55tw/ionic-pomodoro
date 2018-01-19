@@ -79,8 +79,7 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
 export function PomodoroTimer (pomoSetting, notifyCallback) {
   /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
   TODO:
-    1. Skip function
-    2. Recover from closed
+    1. Recover from closed
   */
   this.pomoSetting = pomoSetting
   this.notifyCallback = notifyCallback
@@ -137,7 +136,43 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
   }
 
   this.skip = () => {
-    console.log('Not implemented: skip')
+    console.log('Skip')
+    let now = Date.now()
+
+    if (this.timerState === PomoTimerState.running) {
+      let closest = findNextClosest(this.intvlMarker.ts, now)
+
+      if (closest < 0) {
+        console.log('Skip the last one, finished.')
+        this._resetInternalState()
+        return
+      }
+
+      if (this.notifyTimerHandler) {
+        clearTimeout(this.notifyTimerHandler)
+        this.notifyTimerHandler = null
+      }
+      let fastForward = this.intvlMarker.ts[closest] - now
+      console.log('Fast forwarding ' + fastForward.toString() + ' milliseconds.')
+      let newStartedAt = this.startedAt - fastForward
+      this.intvlMarker = this.pomoSetting.getMarkers(newStartedAt)
+      this.startedAt = newStartedAt
+      setTimeout(this.update, 1000)  // Make sure the update method is called after the skip
+    } else if (this.timerState === PomoTimerState.paused) {
+      let closest = findNextClosest(this.intvlMarker.ts, this.pausedAt)
+
+      if (closest < 0) {
+        console.log('Skip the last one, finished.')
+        this._resetInternalState()
+        return
+      }
+
+      let fastForward = this.intvlMarker.ts[closest] - this.pausedAt
+      console.log('Fast forwarding pausedAt' + fastForward.toString() + ' milliseconds.')
+      this.pausedAt = this.pausedAt + fastForward
+      // Start the timer!
+      this.toggle()
+    }
   }
 
   this.reset = () => {

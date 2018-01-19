@@ -92,6 +92,9 @@ buttons.pomoMenuSkip().addEventListener('click', (evt) => {
   console.log('skip')
   vibration.start('confirmation')
   pomoMenu.style.visibility = 'hidden'
+  pomo.skip()
+  pomo.update()
+  updatePomoView({date: new Date()})
 })
 
 buttons.pomoMenuReset().addEventListener('click', (evt) => {
