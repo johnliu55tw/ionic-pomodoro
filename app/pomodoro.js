@@ -36,10 +36,8 @@ export const PomoTimerState = {
 }
 
 export function PomodoroTimer (settings, notifyCallback) {
-  /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
-  TODO:
-    1. Recover from closed
-  */
+  /* Takes a PomodoroSetting and three callback functions for state changes as arguments. */
+
   /* Store timeSettings in ms */
   this.work = settings.work * 60000
   this.rest = settings.rest * 60000
