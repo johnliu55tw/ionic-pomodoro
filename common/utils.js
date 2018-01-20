@@ -71,24 +71,26 @@ export function assignLongPressEventListener (elem, handler) {
       'addEventListener' and 'onclick' method of the element.
   */
   elem.longPressed = false
-  elem.downAt = null
-  elem._longPressedCallback = handler
+  elem.longPressTimer = null
 
   elem.addEventListener('mousedown', function (evt) {
     elem.longPressed = false
-    if (elem.downAt === null) {
-      elem.downAt = Date.now()
-    }
+    elem.longPressTimer = setTimeout(() => {
+      console.log('Longpress times up. Lets see')
+      elem.longPressTimer = null
+      elem.longPressed = true
+      handler.call(elem, evt)
+    }, 400)
+    // XXX: 400ms is the ideal choice for a long press. Change it only if you
+    // know what you are doing and have done experiments on it.
   })
 
   elem.addEventListener('mouseup', function (evt) {
-    if (elem.downAt && !elem.longPressed && (Date.now() - elem.downAt >= 400)) {
-      // The threshold should be 400ms.
-      // Change it if you've done enough experiments on other values.
-      elem.longPressed = true
-      handler.call(elem, evt)
+    if (elem.longPressTimer) {
+      elem.longPressed = false
+      clearTimeout(elem.longPressTimer)
+      elem.longPressTimer = null
     }
-    elem.downAt = null
   })
 }
 
@@ -100,10 +102,7 @@ export function addShortPressEventListener (elem, handler) {
     method, so you can ADD many handler functions to the click event.
   */
   var wrapper = function (evt) {
-    if (elem.longPressed) {
-      // Already been long pressed, no need to trigger short press again
-      elem.longPressed = false
-    } else {
+    if (!elem.longPressed) { // Triggering short press if long press event hadn't been triggered
       handler.call(elem, evt)
     }
   }
