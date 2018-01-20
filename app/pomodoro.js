@@ -109,7 +109,27 @@ export function PomodoroTimer (settings, notifyCallback) {
   }
   /* Public methods */
   this.saveToFile = (path) => {
-    return null
+    let storedObj = {
+      settings: {
+        // Restore from ms back to minutes
+        work: this.work / 60000,
+        rest: this.rest / 60000,
+        longRest: this.longRest / 60000,
+        longRestAfter: this.longRestAfter,
+        totalIntervals: this.totalIntervals
+      },
+      internalStates: {
+        notifyTimerHandler: null,
+        timerState: this.timerState,
+        intvlState: this.intvlState,
+        doneIntvls: this.doneIntvls,
+        startedAt: this.startedAt,
+        pausedAt: this.pausedAt,
+        countdown: this.countdown,
+        intvlMarker: this.intvlMarker
+      }
+    }
+    fs.writeFileSync(path, storedObj, 'cbor')
   }
   this.toggle = (now) => {
     if (!now) {
