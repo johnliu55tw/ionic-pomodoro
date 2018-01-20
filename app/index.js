@@ -18,12 +18,26 @@ me.addEventListener('unload', (evt) => {
 let hrm = new HeartRateSensor()
 hrm.start()
 
-let pomoSetting = new PomodoroSetting(25, 5, 15, 4, 12)
-let pomo = new PomodoroTimer(pomoSetting, () => {
+// Load stored pomo setting and pomo timer
+console.log('Loading PomodoroSetting from file...')
+let pomoSetting = PomodoroSetting.loadFromFile('pomo_setting')
+if (!pomoSetting) {
+  console.log('Failed. Create new PomodoroSetting.')
+  pomoSetting = new PomodoroSetting(2, 1, 3, 2, 4)
+}
+
+console.log('Loading PomodoroTimer from file...')
+let pomo = PomodoroTimer.loadFromFile('pomo_timer')
+if (!pomo) {
+  console.log('Failed. Create new PomodoroTimer.')
+  pomo = new PomodoroTimer(pomoSetting)
+}
+console.log('Adding notification handler to PomodoroTimer.')
+pomo.onnotify = () => {
   console.log('NOTIFY!!!')
   vibration.start('nudge')
   display.on = true
-})
+}
 
 var updateTimerAndHrmView = (evt) => {
   view.datetime(evt.date)

@@ -1,3 +1,5 @@
+import * as fs from 'fs'
+
 function findNextClosest (arr, elem) {
   if (findNextClosest.lastFoundIdx > 0 &&
       elem > arr[findNextClosest.lastFoundIdx - 1] &&
@@ -75,6 +77,30 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
     }
   }
 }
+PomodoroSetting.loadFromFile = (path) => {
+  try {
+    let storedObj = fs.readFileSync(path, 'cbor')
+    return new PomodoroSetting(storedObj.work,
+                               storedObj.rest,
+                               storedObj.longRest,
+                               storedObj.longRestAfter,
+                               storedObj.totalIntervals)
+  } catch (e) {
+    return null
+  }
+}
+PomodoroSetting.prototype.saveToFile = (path) => {
+  fs.writeFileSync(
+    path,
+    {
+      work: this.work,
+      rest: this.rest,
+      longRest: this.longRest,
+      longRestAfter: this.longRestAfter,
+      totalIntervals: this.totalIntervals
+    },
+    'cbor')
+}
 
 export function PomodoroTimer (pomoSetting, notifyCallback) {
   /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
@@ -82,7 +108,9 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
     1. Recover from closed
   */
   this.pomoSetting = pomoSetting
-  this.notifyCallback = notifyCallback
+
+  // Public attributes
+  this.onnotify = notifyCallback
 
   /* Methods */
   // Reset/Initialize internal states
@@ -101,9 +129,9 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
   }
   this._resetInternalState()
 
-  this.notify = () => {
-    if (this.notifyCallback) {
-      this.notifyCallback()
+  this._notify = () => {
+    if (this.onnotify) {
+      this.onnotify()
     }
     this.notifyTimerHandler = null
   }
@@ -208,9 +236,17 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
           setTimeout(this.update, 2000)
         } else {
           console.log('Setup notify handler countdown for: ' + this.countdown.toString())
-          this.notifyTimerHandler = setTimeout(this.notify, this.countdown)
+          this.notifyTimerHandler = setTimeout(this._notify, this.countdown)
         }
       }
     }
   }
+}
+PomodoroTimer.loadFromFile = () => {
+  // Test: always return null
+  return null
+}
+PomodoroTimer.prototype.saveToFile = () => {
+  // Test: always return null
+  return null
 }
