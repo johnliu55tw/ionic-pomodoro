@@ -8,7 +8,7 @@ import {me} from 'appbit'
 import * as utils from '../common/utils'
 import * as view from 'view'
 import * as buttons from 'buttons'
-import {PomodoroSetting, PomodoroTimer, PomoIntvlState, PomoTimerState} from 'pomodoro'
+import {PomodoroTimer, PomoIntvlState, PomoTimerState} from 'pomodoro'
 import {CONFIG} from 'config'
 
 // App closing handler
@@ -19,16 +19,11 @@ me.addEventListener('unload', (evt) => {
 let hrm = new HeartRateSensor()
 hrm.start()
 
-let pomoSetting = new PomodoroSetting(CONFIG.pomodoro.work,
-                                      CONFIG.pomodoro.rest,
-                                      CONFIG.pomodoro.longRest,
-                                      CONFIG.pomodoro.longRestAfter,
-                                      CONFIG.pomodoro.totalIntervals)
 console.log('Loading PomodoroTimer from file...')
-let pomo = PomodoroTimer.loadFromFile('pomo_timer')
+let pomo = PomodoroTimer.loadFromFile(CONFIG.pomodoroTimerPath)
 if (!pomo) {
   console.log('Failed. Create new PomodoroTimer.')
-  pomo = new PomodoroTimer(pomoSetting)
+  pomo = new PomodoroTimer(CONFIG.pomodoroSettings)
 }
 console.log('Adding notification handler to PomodoroTimer.')
 pomo.onnotify = () => {
@@ -58,12 +53,12 @@ var updatePomoView = (evt) => {
     }
     view.pomodoro(pomo.countdown / 1000,
                   pomo.doneIntvls,
-                  pomoSetting.totalIntervals,
+                  pomo.totalIntervals,
                   color)
   } else {
     view.pomodoro(pomo.countdown / 1000,
                   pomo.doneIntvls,
-                  pomoSetting.totalIntervals,
+                  pomo.totalIntervals,
                   'gray')
   }
 }

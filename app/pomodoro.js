@@ -35,15 +35,24 @@ export const PomoTimerState = {
   idle: 'idle'
 }
 
-export function PomodoroSetting (work, rest, longRest, longRestAfter, totalIntervals) {
-  /* Input in minutes, stores in ms */
-  this.work = work * 60000
-  this.rest = rest * 60000
-  this.longRest = longRest * 60000
-  this.longRestAfter = longRestAfter
-  this.totalIntervals = totalIntervals
+export function PomodoroTimer (settings, notifyCallback) {
+  /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
+  TODO:
+    1. Recover from closed
+  */
+  /* Store timeSettings in ms */
+  this.work = settings.work * 60000
+  this.rest = settings.rest * 60000
+  this.longRest = settings.longRest * 60000
+  this.longRestAfter = settings.longRestAfter
+  this.totalIntervals = settings.totalIntervals
 
-  this.getMarkers = (offsetMin = 0) => {
+  // Public attributes
+  this.onnotify = notifyCallback
+
+  /* Private methods */
+  // Calculate interval markers
+  this._getMarkers = (offsetMin = 0) => {
     // Return time markers are in ms
     let timeMarkers = []
     let stateMarkers = []
@@ -76,19 +85,6 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
       intvl: intvlMarkers
     }
   }
-}
-
-export function PomodoroTimer (pomoSetting, notifyCallback) {
-  /* Takes a PomodoroSetting and three callback functions for state changes as arguments.
-  TODO:
-    1. Recover from closed
-  */
-  this.pomoSetting = pomoSetting
-
-  // Public attributes
-  this.onnotify = notifyCallback
-
-  /* Private methods */
   // Reset/Initialize internal states
   this._resetInternalState = () => {
     if (this.notifyTimerHandler) {
@@ -100,7 +96,7 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
     this.doneIntvls = 0  // Whenever a high interval is finished, it will be increased by 1
     this.startedAt = null
     this.pausedAt = null
-    this.countdown = this.pomoSetting.work // Initialized to the time of work interval
+    this.countdown = this.work // Initialized to the time of work interval
     this.intvlMarker = null
   }
   this._resetInternalState()
@@ -123,14 +119,14 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
       case PomoTimerState.idle: // Start from idle
         this.timerState = PomoTimerState.running
         this.startedAt = now
-        this.intvlMarker = this.pomoSetting.getMarkers(this.startedAt)
+        this.intvlMarker = this._getMarkers(this.startedAt)
         this.update(now)
         break
       case PomoTimerState.paused: // Start from paused
         this.timerState = PomoTimerState.running
         let newStartedAt = this.startedAt + now - this.pausedAt
         this.startedAt = newStartedAt
-        this.intvlMarker = this.pomoSetting.getMarkers(newStartedAt)
+        this.intvlMarker = this._getMarkers(newStartedAt)
         this.pausedAt = null
         this.update(now)
         break
@@ -163,7 +159,7 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
       let fastForward = this.intvlMarker.ts[closest] - now
       console.log('Fast forwarding ' + fastForward.toString() + ' milliseconds.')
       let newStartedAt = this.startedAt - fastForward
-      this.intvlMarker = this.pomoSetting.getMarkers(newStartedAt)
+      this.intvlMarker = this._getMarkers(newStartedAt)
       this.startedAt = newStartedAt
       setTimeout(this.update, 1000)  // Make sure the update method is called after the skip
     } else if (this.timerState === PomoTimerState.paused) {
