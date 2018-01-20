@@ -137,6 +137,7 @@ buttons.pomoMenuReset().addEventListener('click', (evt) => {
   vibration.start('confirmation')
   pomoMenu.style.visibility = 'hidden'
   console.log('Reset. Create new PomodoroTimer.')
+  pomo.reset() // This is required to clear the notify timer
   pomo = new PomodoroTimer(CONFIG.pomodoroSettings)
   console.log('Adding notification handler to PomodoroTimer.')
   pomo.onnotify = () => {

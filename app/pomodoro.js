@@ -84,7 +84,7 @@ export function PomodoroTimer (settings, notifyCallback) {
     }
   }
   // Reset/Initialize internal states
-  this._resetInternalState = () => {
+  this.reset = () => {
     if (this.notifyTimerHandler) {
       clearTimeout(this.notifyTimerHandler)
     }
@@ -97,7 +97,7 @@ export function PomodoroTimer (settings, notifyCallback) {
     this.countdown = this.work // Initialized to the time of work interval
     this.intvlMarker = null
   }
-  this._resetInternalState()
+  this.reset() // Call it immediately to generate those internal states
 
   this._notify = () => {
     if (this.onnotify) {
@@ -166,7 +166,7 @@ export function PomodoroTimer (settings, notifyCallback) {
 
       if (closest < 0) {
         console.log('Skip the last one, finished.')
-        this._resetInternalState()
+        this.reset()
         return
       }
 
@@ -185,7 +185,7 @@ export function PomodoroTimer (settings, notifyCallback) {
 
       if (closest < 0) {
         console.log('Skip the last one, finished.')
-        this._resetInternalState()
+        this.reset()
         return
       }
 
@@ -210,7 +210,7 @@ export function PomodoroTimer (settings, notifyCallback) {
         this.doneIntvls = this.intvlMarker.intvl[closest]
       } else { // End
         console.log('Timer end')
-        this._resetInternalState()
+        this.reset()
         return
       }
       // Setup notification
