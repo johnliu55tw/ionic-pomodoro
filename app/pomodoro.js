@@ -77,30 +77,6 @@ export function PomodoroSetting (work, rest, longRest, longRestAfter, totalInter
     }
   }
 }
-PomodoroSetting.loadFromFile = (path) => {
-  try {
-    let storedObj = fs.readFileSync(path, 'cbor')
-    return new PomodoroSetting(storedObj.work,
-                               storedObj.rest,
-                               storedObj.longRest,
-                               storedObj.longRestAfter,
-                               storedObj.totalIntervals)
-  } catch (e) {
-    return null
-  }
-}
-PomodoroSetting.prototype.saveToFile = (path) => {
-  fs.writeFileSync(
-    path,
-    {
-      work: this.work,
-      rest: this.rest,
-      longRest: this.longRest,
-      longRestAfter: this.longRestAfter,
-      totalIntervals: this.totalIntervals
-    },
-    'cbor')
-}
 
 export function PomodoroTimer (pomoSetting, notifyCallback) {
   /* Takes a PomodoroSetting and three callback functions for state changes as arguments.

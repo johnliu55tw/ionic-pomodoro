@@ -9,6 +9,7 @@ import * as utils from '../common/utils'
 import * as view from 'view'
 import * as buttons from 'buttons'
 import {PomodoroSetting, PomodoroTimer, PomoIntvlState, PomoTimerState} from 'pomodoro'
+import {CONFIG} from 'config'
 
 // App closing handler
 me.addEventListener('unload', (evt) => {
@@ -18,14 +19,11 @@ me.addEventListener('unload', (evt) => {
 let hrm = new HeartRateSensor()
 hrm.start()
 
-// Load stored pomo setting and pomo timer
-console.log('Loading PomodoroSetting from file...')
-let pomoSetting = PomodoroSetting.loadFromFile('pomo_setting')
-if (!pomoSetting) {
-  console.log('Failed. Create new PomodoroSetting.')
-  pomoSetting = new PomodoroSetting(2, 1, 3, 2, 4)
-}
-
+let pomoSetting = new PomodoroSetting(CONFIG.pomodoro.work,
+                                      CONFIG.pomodoro.rest,
+                                      CONFIG.pomodoro.longRest,
+                                      CONFIG.pomodoro.longRestAfter,
+                                      CONFIG.pomodoro.totalIntervals)
 console.log('Loading PomodoroTimer from file...')
 let pomo = PomodoroTimer.loadFromFile('pomo_timer')
 if (!pomo) {
