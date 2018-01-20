@@ -72,22 +72,23 @@ export function assignLongPressEventListener (elem, handler) {
   */
   elem.longPressed = false
   elem.downAt = null
+  elem._longPressedCallback = handler
 
   elem.addEventListener('mousedown', function (evt) {
-    this.longPressed = false
-    if (this.downAt === null) {
-      this.downAt = Date.now()
+    elem.longPressed = false
+    if (elem.downAt === null) {
+      elem.downAt = Date.now()
     }
   })
 
   elem.addEventListener('mouseup', function (evt) {
-    if (this.downAt && !this.longPressed && (Date.now() - this.downAt >= 400)) {
+    if (elem.downAt && !elem.longPressed && (Date.now() - elem.downAt >= 400)) {
       // The threshold should be 400ms.
       // Change it if you've done enough experiments on other values.
-      this.longPressed = true
-      handler.call(this, evt)
+      elem.longPressed = true
+      handler.call(elem, evt)
     }
-    this.downAt = null
+    elem.downAt = null
   })
 }
 
@@ -99,11 +100,11 @@ export function addShortPressEventListener (elem, handler) {
     method, so you can ADD many handler functions to the click event.
   */
   var wrapper = function (evt) {
-    if (this.longPressed) {
+    if (elem.longPressed) {
       // Already been long pressed, no need to trigger short press again
-      this.longPressed = false
+      elem.longPressed = false
     } else {
-      handler.call(this, evt)
+      handler.call(elem, evt)
     }
   }
   elem.addEventListener('click', wrapper)
