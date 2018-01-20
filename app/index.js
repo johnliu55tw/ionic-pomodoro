@@ -131,10 +131,18 @@ buttons.pomoMenuSkip().addEventListener('click', (evt) => {
 })
 
 buttons.pomoMenuReset().addEventListener('click', (evt) => {
+  // Create a new PomodoroTimer instance with settings from CONFIG and assigned
+  // it to the pomo variable.
   console.log('button reset')
   vibration.start('confirmation')
   pomoMenu.style.visibility = 'hidden'
-  pomo.reset()
-  pomo.update()
+  console.log('Reset. Create new PomodoroTimer.')
+  pomo = new PomodoroTimer(CONFIG.pomodoroSettings)
+  console.log('Adding notification handler to PomodoroTimer.')
+  pomo.onnotify = () => {
+    console.log('NOTIFY!!!')
+    vibration.start('nudge')
+    display.on = true
+  }
   updatePomoView({date: new Date()})
 })

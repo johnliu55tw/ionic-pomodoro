@@ -197,11 +197,6 @@ export function PomodoroTimer (settings, notifyCallback) {
     }
   }
 
-  this.reset = () => {
-    console.log('Timer reset')
-    this._resetInternalState()
-  }
-
   this.update = (now) => {
     if (!now) {
       now = Date.now()
