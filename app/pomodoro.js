@@ -237,7 +237,21 @@ export function PomodoroTimer (settings, notifyCallback) {
     }
   }
 }
-PomodoroTimer.loadFromFile = () => {
-  // Test: always return null
-  return null
+PomodoroTimer.loadFromFile = (path) => {
+  try {
+    let stored = fs.readFileSync(path, 'cbor')
+    let pomo = new PomodoroTimer(stored.settings)
+    // Restore internal state
+    pomo.notifyTimerHandler = stored.internalStates.notifyTimerHandler
+    pomo.timerState = stored.internalStates.timerState
+    pomo.intvlState = stored.internalStates.intvlState
+    pomo.doneIntvls = stored.internalStates.doneIntvls
+    pomo.startedAt = stored.internalStates.startedAt
+    pomo.pausedAt = stored.internalStates.pausedAt
+    pomo.countdown = stored.internalStates.countdown
+    pomo.intvlMarker = stored.internalStates.intvlMarker
+    return pomo
+  } catch (e) {
+    return null
+  }
 }
