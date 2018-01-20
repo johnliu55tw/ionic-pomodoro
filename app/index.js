@@ -11,9 +11,36 @@ import * as buttons from 'buttons'
 import {PomodoroTimer, PomoIntvlState, PomoTimerState} from 'pomodoro'
 import {CONFIG} from 'config'
 
+/* DEBUGGING: Read and show stored pomo file. Uncomment this part if you need to
+ * inspect the stored file.
+import * as fs from 'fs'
+try {
+  let data = fs.readFileSync(CONFIG.pomodoroTimerPath, 'cbor')
+  console.log(data.settings.work)
+  console.log(data.settings.rest)
+  console.log(data.settings.longRest)
+  console.log(data.settings.longRestAfter)
+  console.log(data.settings.totalIntervals)
+  console.log(data.internalStates.notifyTimerHandler)
+  console.log(data.internalStates.timerState)
+  console.log(data.internalStates.intvlState)
+  console.log(data.internalStates.doneIntvls)
+  console.log(data.internalStates.startedAt)
+  console.log(data.internalStates.pausedAt)
+  console.log(data.internalStates.countdown)
+  console.log(data.internalStates.intvlMarker.ts)
+  console.log(data.internalStates.intvlMarker.state)
+  console.log(data.internalStates.intvlMarker.intvl)
+} catch (e) {
+  console.log('DEBUGGING: Faild to load file.')
+}
+*/
+
 // App closing handler
 me.addEventListener('unload', (evt) => {
-  console.log('Customized closing handler function!')
+  console.log('App closing. Store current pomodoro state...')
+  pomo.saveToFile(CONFIG.pomodoroTimerPath)
+  console.log('Finished.')
 })
 
 let hrm = new HeartRateSensor()
