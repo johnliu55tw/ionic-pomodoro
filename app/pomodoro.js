@@ -88,7 +88,7 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
   // Public attributes
   this.onnotify = notifyCallback
 
-  /* Methods */
+  /* Private methods */
   // Reset/Initialize internal states
   this._resetInternalState = () => {
     if (this.notifyTimerHandler) {
@@ -111,7 +111,10 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
     }
     this.notifyTimerHandler = null
   }
-
+  /* Public methods */
+  this.saveToFile = (path) => {
+    return null
+  }
   this.toggle = (now) => {
     if (!now) {
       now = Date.now()
@@ -219,10 +222,6 @@ export function PomodoroTimer (pomoSetting, notifyCallback) {
   }
 }
 PomodoroTimer.loadFromFile = () => {
-  // Test: always return null
-  return null
-}
-PomodoroTimer.prototype.saveToFile = () => {
   // Test: always return null
   return null
 }
