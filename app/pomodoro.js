@@ -211,6 +211,7 @@ export function PomodoroTimer (settings, notifyCallback) {
       } else { // End
         console.log('Timer end')
         this._resetInternalState()
+        return
       }
       // Setup notification
       if (!this.notifyTimerHandler) {
